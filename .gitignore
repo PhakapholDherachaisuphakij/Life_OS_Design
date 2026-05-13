@@ -1,0 +1,11 @@
+node_modules
+.env
+.env*.local
+.next/
+out/
+build/
+
+# Ignore sensitive Google keys
+client_secret_*.json
+personalos-*.json
+get-refresh-token.js
