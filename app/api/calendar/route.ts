@@ -3,13 +3,10 @@ import { google } from 'googleapis';
 
 export async function GET() {
   try {
-    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
-    // Handle newlines in private key
-    const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
     const calendarId = process.env.GOOGLE_CALENDAR_ID;
 
-    if (!clientEmail || !privateKey || !calendarId) {
-      return NextResponse.json({ error: 'Missing Google Calendar credentials' }, { status: 500 });
+    if (!calendarId) {
+      return NextResponse.json({ error: 'Missing GOOGLE_CALENDAR_ID environment variable' }, { status: 500 });
     }
 
     // ---------- OAuth2 client (Refresh Token) ----------

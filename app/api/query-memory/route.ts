@@ -58,8 +58,17 @@ export async function POST(req: Request) {
     }
 
     const { data: logs, error: logsError } = await logsQuery;
-
     if (logsError) throw logsError;
+
+    // Fetch todos to provide task context to the Oracle
+    const { data: todos, error: todosError } = await supabase
+      .from('todos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (todosError) {
+      console.error("Failed to fetch todos for Oracle:", todosError);
+    }
 
     // Use background from DB
     const backgroundContext = (identity as any)?.background || "";
@@ -81,6 +90,9 @@ export async function POST(req: Request) {
       
       Current Identity Data (from DB):
       ${JSON.stringify(identity, null, 2)}
+      
+      Current & Past Todos (from DB):
+      ${JSON.stringify(todos || [], null, 2)}
       
       Historical Life Logs (from DB):
       ${JSON.stringify(logs, null, 2)}

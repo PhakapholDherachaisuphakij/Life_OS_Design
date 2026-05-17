@@ -79,6 +79,23 @@ export async function POST(req: Request) {
       }
     }
 
+    // 3. Write to life_logs so the Oracle immediately knows about the created task!
+    if (data) {
+      try {
+        const category = data.title.toLowerCase().includes('scb') ? 'Career' : 
+                         data.title.toLowerCase().includes('ทุน') || data.title.toLowerCase().includes('siri') ? 'Self-Improvement' : 'Social';
+        await supabase
+          .from('life_logs')
+          .insert({
+            content: `Created task: ${data.title}${data.due_date ? ` (Due: ${data.due_date})` : ''}`,
+            category: category,
+            raw_text: `Task created on dashboard: ${data.title}`
+          });
+      } catch (logError) {
+        console.error("Failed to write todo creation to life_logs:", logError);
+      }
+    }
+
     return NextResponse.json(data);
   } catch (err: any) {
     console.error('Error adding todo:', err);
@@ -97,6 +114,24 @@ export async function PATCH(req: Request) {
       .single();
 
     if (error) throw error;
+
+    // 3. Write to life_logs when a task is marked completed
+    if (completed && data) {
+      try {
+        const category = data.title.toLowerCase().includes('scb') ? 'Career' : 
+                         data.title.toLowerCase().includes('ทุน') || data.title.toLowerCase().includes('siri') ? 'Self-Improvement' : 'Social';
+        await supabase
+          .from('life_logs')
+          .insert({
+            content: `Completed task: ${data.title}`,
+            category: category,
+            raw_text: `Task marked completed on dashboard: ${data.title}`
+          });
+      } catch (logError) {
+        console.error("Failed to write todo completion to life_logs:", logError);
+      }
+    }
+
     return NextResponse.json(data);
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
