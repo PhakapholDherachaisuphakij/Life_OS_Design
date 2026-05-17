@@ -65,8 +65,14 @@ export async function POST(req: Request) {
     const backgroundContext = (identity as any)?.background || "";
 
     // 2. Construct the prompt with full context
+    const todayStr = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
     const prompt = `
       You are the user's Personal Memory Assistant (Oracle). Based on the provided background context, life logs, and identity data, answer the user's query.
+      
+      Today's Date & Context:
+      - Today is: ${todayStr}
+      - ISO Timestamp: ${now.toISOString()}
+      - Current Year: ${now.getFullYear()}
       
       User Query: "${query}"
       

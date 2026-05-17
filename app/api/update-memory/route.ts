@@ -29,8 +29,15 @@ export async function POST(req: Request) {
     }
 
     // 2. Call Typhoon AI to extract updates, calendar events, and life logs
+    const now = new Date();
+    const todayStr = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
     const prompt = `
       You are an Information Extractor, Event Scheduler, and Life Logger. Analyze the user's free-form update and compare it against the current identity (provided as JSON).
+      
+      Today's Date & Context:
+      - Today is: ${todayStr}
+      - ISO Timestamp: ${now.toISOString()}
+      - Current Year: ${now.getFullYear()}
       
       You must return a JSON object with THREE keys:
       1. "db_updates": Fields in user_identity that need to be updated (Current State).

@@ -113,8 +113,16 @@ else:
 
 # 7. Call Typhoon AI to generate Daily Strategy
 print("Invoking Typhoon AI...")
+today_dt = datetime.datetime.now()
+today_str = today_dt.strftime("%A, %d %B %Y")
+
 system_prompt = f"""
 You are the "Core OS" for PK (Phakaphol). Your job is to analyze his core identity, active todos, and today's calendar schedule to generate a comprehensive Daily Strategy.
+
+Today's Date & Context:
+- Today is: {today_str}
+- ISO Timestamp: {today_dt.isoformat()}
+- Current Year: {today_dt.year}
 
 Core Identity:
 {json.dumps(identity, indent=2, ensure_ascii=False)}
